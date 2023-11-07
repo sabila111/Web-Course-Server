@@ -9,7 +9,7 @@ const port =process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
 
-console.log(process.env.DB_USER)
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.blfnlbm.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -34,23 +34,32 @@ async function run() {
         const result = await cursor.toArray()
         res.send(result)
     })
+
+    app.get('/jobs/:id' , async(req, res) =>{
+
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        console.log('get the data', query);
+        const result = await jobsCollections.findOne(query)
+        console.log('Result from MongoDB query', result);
+        res.send(result)
+    })
      
 
     app.post('/jobs', async(req, res) =>{
 
         const job = req.body;
-        console.log(job)
         const result = await jobsCollections.insertOne(job)
         res.send(result)
        })
     
-    app.delete('/jobs/:id'),async(req, res) =>{
+    app.delete('/jobs/:id',async(req, res) =>{
 
         const id = req.params.id;
         const query = {_id: new ObjectId(id)}
         const result = await jobsCollections.deleteOne(query)
         res.send(result)
-    }
+    })
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
