@@ -28,6 +28,14 @@ async function run() {
 
     const jobsCollections = client.db("jobsDB").collection("jobs")
     
+    app.get('/jobs', async(req, res) =>{
+     
+        const cursor =jobsCollections.find()
+        const result = await cursor.toArray()
+        res.send(result)
+    })
+     
+
     app.post('/jobs', async(req, res) =>{
 
         const job = req.body;
