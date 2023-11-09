@@ -6,7 +6,14 @@ const app = express()
 const port =process.env.PORT || 5000
 
 // middleware
-app.use(cors())
+app.use(cors({
+  origin:[
+    // 'http://localhost:5173/',
+    'https://web-course-project-4613a.web.app',
+    'https://web-course-project-4613a.firebaseapp.com'
+  ],
+  credentials: true
+}))
 app.use(express.json())
 
 
@@ -50,6 +57,12 @@ async function run() {
       res.send(result)
    })
 
+   app.get('/bids', async(req, res)=>{
+    console.log(req.query)
+    const cursor =jobsCollections.find()
+      const result = await cursor.toArray()
+      res.send(result)
+   })
 
     app.get('/jobs/:id' , async(req, res) =>{
 
@@ -69,7 +82,17 @@ async function run() {
         res.send(result)
     })
     
-    app.get('/jobs/:category' , async(req, res) =>{
+    app.get('/bids/:id' , async(req, res) =>{
+
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      console.log('get the data', query);
+      const result = await jobsCollections.findOne(query)
+      console.log('Result from MongoDB query', result);
+      res.send(result)
+  })
+
+    app.get('/job/:category' , async(req, res) =>{
 
       const category = req.params.category;
       const cursor = jobsCollections.find({category:category})
@@ -78,6 +101,8 @@ async function run() {
       
       res.send(result)
   })  
+
+ 
 
     app.post('/jobs', async(req, res) =>{
 
