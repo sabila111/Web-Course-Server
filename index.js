@@ -28,6 +28,9 @@ async function run() {
 
     const jobsCollections = client.db("jobsDB").collection("jobs")
     
+    const bidsCollections = client.db("jobsDB").collection("bids")
+
+    
 
   //   app.get('/jobs', async(req, res) =>{
   //    console.log(req.query.email)
@@ -80,6 +83,12 @@ async function run() {
 
         const job = req.body;
         const result = await jobsCollections.insertOne(job)
+        res.send(result)
+       })
+    app.post('/bids', async(req, res) =>{
+
+        const job = req.body;
+        const result = await bidsCollections.insertOne(job)
         res.send(result)
        })
     
